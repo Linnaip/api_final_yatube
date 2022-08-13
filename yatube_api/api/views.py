@@ -1,4 +1,3 @@
-# TODO:  Напишите свой вариант
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.pagination import LimitOffsetPagination
@@ -6,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from .serializers import PostSerializer, GroupSerializer, CommentSerializer, FollowSerializer
 from .permissions import AuthAuthorOrReadOnly
-from posts.models import Post, Group, Comment, Follow
+from posts.models import Post, Group, Comment, Follow, User
 
 
 class PostViewSet(viewsets.ViewSet):
@@ -41,6 +40,10 @@ class CommentViewSet(viewsets.ViewSet):
 
 
 class FollowViewSet(viewsets.ViewSet):
-    queryset = Follow.objects.all()
     serializer_class = FollowSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = get_object_or_404(User, pk=self.request.user.pk)
+        return user.following.all()
+# фильтер бек энд
