@@ -35,15 +35,3 @@ class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Follow
-        validators = (
-            UniqueTogetherValidator(
-                queryset=Follow.objects.all(),
-                fields=('user', 'following')
-            ),
-        )
-
-        def validate_following(self, following):
-            if self.context.get('request').user == following:
-                raise serializers.ValidationError(
-                    'You can not follow to yourself.')
-            return following

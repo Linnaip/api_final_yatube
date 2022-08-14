@@ -9,12 +9,13 @@ from .permissions import AuthAuthorOrReadOnly
 from posts.models import Post, Group, Comment, Follow, User
 
 
-class PostViewSet(viewsets.ModelViewSet):  # pagination
+class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, AuthAuthorOrReadOnly)
+    pagination_class = LimitOffsetPagination
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['group', ]
+    filterset_fields = ['group']
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -23,12 +24,12 @@ class PostViewSet(viewsets.ModelViewSet):  # pagination
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-    permission_classes = (AuthAuthorOrReadOnly,)
+    permission_classes = [AuthAuthorOrReadOnly]
 
 
-class CommentViewSet(viewsets.ModelViewSet):  # comment get
+class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, AuthAuthorOrReadOnly)
+    permission_classes = [IsAuthenticatedOrReadOnly, AuthAuthorOrReadOnly]
 
     def get_queryset(self):
         post_id = self.kwargs.get('post_id')
@@ -49,12 +50,10 @@ class FollowViewSet(viewsets.ModelViewSet):
     search_fields = ['user__username', 'following__username']
 
     def get_queryset(self):
-        user = get_object_or_404(User, pk=self.request.user.pk)
-        result = user.following.all()
+        user = get_object_or_404(User, username=self.request.user.username)
+        result = user.follower
         return result
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-# follow_get
-# follow_create
-# search_fields
+# follow create не работает
