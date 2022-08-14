@@ -9,7 +9,7 @@ from .permissions import AuthAuthorOrReadOnly
 from posts.models import Post, Group, Comment, Follow, User
 
 
-class PostViewSet(viewsets.ModelViewSet):
+class PostViewSet(viewsets.ModelViewSet):  # pagination
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, AuthAuthorOrReadOnly)
@@ -26,7 +26,7 @@ class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (AuthAuthorOrReadOnly,)
 
 
-class CommentViewSet(viewsets.ModelViewSet):
+class CommentViewSet(viewsets.ModelViewSet):  # comment get
     serializer_class = CommentSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, AuthAuthorOrReadOnly)
 
@@ -55,3 +55,6 @@ class FollowViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+# follow_get
+# follow_create
+# search_fields
