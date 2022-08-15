@@ -6,7 +6,7 @@ User = get_user_model()
 
 class Group(models.Model):
     title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, default=uuid.uuid1)
     description = models.TextField()
 
     def __str__(self):
@@ -43,16 +43,20 @@ class Follow(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='follower'
+        related_name='follower',
+        null=True,
+        blank=True
     )
     following = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='following'
+        related_name='following',
+        null=True,
+        blank=True
     )
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['user', 'following'],
-                                    name='unique_following')
+                                    name='unique_follow')
         ]
