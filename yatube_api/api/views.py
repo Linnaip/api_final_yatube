@@ -10,7 +10,7 @@ from .serializers import (PostSerializer,
                           CommentSerializer,
                           FollowSerializer)
 from .permissions import AuthAuthorOrReadOnly
-from posts.models import Post, Group, User
+from posts.models import Post, Group
 
 
 class PostViewSet(viewsets.ModelViewSet):
